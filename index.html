@@ -6,7 +6,7 @@
     <title>I AM BORED - חמ"ל שעמום לאומי</title>
     <link href="https://fonts.googleapis.com" rel="stylesheet">
     <style>
-        :root { --bg: #050505; --card: rgba(20, 20, 20, 0.8); --border: #222; --red: #ff3b30; --yellow: #ffcc00; --green: #34c759; --radar: rgba(255, 255, 255, 0.05); }
+        :root { --bg: #050505; --card: rgba(18, 18, 18, 0.9); --border: #222; --red: #ff3b30; --yellow: #ffcc00; --green: #34c759; --radar: rgba(255, 255, 255, 0.03); }
         
         body { 
             background-color: var(--bg); color: #fff; font-family: 'Assistant', sans-serif; 
@@ -17,14 +17,13 @@
         /* --- אנימציית רדאר ברקע --- */
         .radar-bg {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 100vw; height: 100vw; max-width: 800px; max-height: 800px;
-            border: 1px solid var(--radar); border-radius: 50%; z-index: -1;
-            pointer-events: none;
+            width: 100vw; height: 100vw; max-width: 900px; max-height: 900px;
+            border: 1px solid var(--radar); border-radius: 50%; z-index: -1; pointer-events: none;
         }
         .radar-bg::after {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: conic-gradient(from 0deg, transparent, var(--radar));
-            border-radius: 50%; animation: rotate 4s linear infinite;
+            border-radius: 50%; animation: rotate 5s linear infinite;
         }
         .radar-circle {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -32,80 +31,98 @@
         }
         @keyframes rotate { 100% { transform: rotate(360deg); } }
 
-        /* --- Header & Status --- */
+        /* --- Header & Main Status --- */
         .header { text-align: center; width: 100%; max-width: 900px; padding: 20px 0; border-bottom: 1px solid var(--border); margin-bottom: 30px; z-index: 1; }
-        .live-tag { background: var(--red); color: white; padding: 2px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; animation: blink 1s infinite; }
-        @keyframes blink { 0%, 100% {opacity: 1;} 50% {opacity: 0.3;} }
-        #status-text { font-size: clamp(4rem, 15vw, 8rem); font-weight: 900; margin: 10px 0; line-height: 0.9; transition: 0.4s; }
+        .live-tag { background: var(--red); color: white; padding: 2px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; animation: blink 1.5s infinite; }
+        @keyframes blink { 0%, 100% {opacity: 1;} 50% {opacity: 0.2;} }
+        #status-text { font-size: clamp(5rem, 18vw, 9rem); font-weight: 900; margin: 5px 0; line-height: 0.85; transition: 0.4s; }
 
-        /* --- Dashboard --- */
+        /* --- Dashboard Grid --- */
         .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; width: 100%; max-width: 900px; z-index: 1; }
-        .card { background: var(--card); border: 1px solid var(--border); padding: 20px; border-radius: 12px; backdrop-filter: blur(5px); }
+        .card { background: var(--card); border: 1px solid var(--border); padding: 20px; border-radius: 12px; backdrop-filter: blur(10px); text-align: right; }
         .card h3 { font-size: 0.75rem; color: #666; margin: 0 0 15px 0; text-transform: uppercase; border-bottom: 1px solid #222; padding-bottom: 8px; }
         
-        .meter-bar { height: 10px; background: #222; border-radius: 5px; margin: 15px 0; overflow: hidden; }
-        #meter-fill { height: 100%; width: 95%; background: linear-gradient(90deg, var(--red), var(--yellow), var(--green)); transition: 1.5s ease-in-out; }
+        .meter-bar { height: 12px; background: #1a1a1a; border-radius: 6px; margin: 15px 0; overflow: hidden; }
+        #meter-fill { height: 100%; width: 95%; background: linear-gradient(90deg, var(--red), var(--yellow), var(--green)); transition: 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        .region-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #1a1a1a; font-size: 0.9rem; }
+        .status-dot { height: 7px; width: 7px; border-radius: 50%; display: inline-block; margin-left: 8px; }
 
         /* --- News Ticker --- */
-        .ticker-wrap { position: fixed; bottom: 0; left: 0; width: 100%; background: #000; border-top: 1px solid #222; padding: 8px 0; z-index: 10; }
-        .ticker { display: inline-block; white-space: nowrap; animation: ticker 40s linear infinite; font-size: 0.85rem; color: var(--yellow); }
+        .ticker-wrap { position: fixed; bottom: 0; left: 0; width: 100%; background: #000; border-top: 1px solid #222; padding: 10px 0; z-index: 10; }
+        .ticker { display: inline-block; white-space: nowrap; animation: ticker 45s linear infinite; font-size: 0.85rem; color: var(--yellow); font-weight: 500; }
         @keyframes ticker { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
         /* --- Controls --- */
-        .controls { margin: 40px 0 80px 0; display: flex; gap: 10px; z-index: 1; flex-wrap: wrap; justify-content: center; }
-        button { background: #111; color: #888; border: 1px solid #333; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: 800; transition: 0.3s; }
-        button:hover { border-color: #fff; color: #fff; }
-        button.active { background: #fff; color: #000; border-color: #fff; }
+        .controls { margin: 40px 0 100px 0; display: flex; gap: 12px; z-index: 1; flex-wrap: wrap; justify-content: center; }
+        button { background: #111; color: #777; border: 1px solid #333; padding: 14px 28px; border-radius: 8px; cursor: pointer; font-weight: 800; transition: 0.3s; font-size: 0.95rem; }
+        button:hover { border-color: #fff; color: #fff; background: #1a1a1a; }
+        button.active { background: #fff; color: #000; border-color: #fff; box-shadow: 0 0 15px rgba(255,255,255,0.2); }
 
         /* --- Global Modes --- */
         .mode-safe #status-text { color: white; }
-        .mode-tense #status-text { color: var(--yellow); }
-        .mode-action #status-text { color: var(--red); text-shadow: 0 0 30px rgba(255, 59, 48, 0.5); }
+        .mode-safe .status-dot { background: var(--green); }
+        .mode-tense #status-text { color: var(--yellow); text-shadow: 0 0 25px rgba(255, 204, 0, 0.2); }
+        .mode-tense .status-dot { background: var(--yellow); }
+        .mode-action #status-text { color: var(--red); text-shadow: 0 0 35px rgba(255, 59, 48, 0.4); }
+        .mode-action .status-dot { background: var(--red); }
     </style>
 </head>
 <body class="mode-safe">
 
-    <!-- רדאר ברקע -->
+    <!-- רדאר רקע -->
     <div class="radar-bg">
-        <div class="radar-circle" style="width: 25%; height: 25%;"></div>
-        <div class="radar-circle" style="width: 50%; height: 50%;"></div>
-        <div class="radar-circle" style="width: 75%; height: 75%;"></div>
+        <div class="radar-circle" style="width: 30%; height: 30%;"></div>
+        <div class="radar-circle" style="width: 60%; height: 60%;"></div>
     </div>
 
     <div class="header">
-        <span class="live-tag">LIVE FEED</span>
-        <h1>I AM BORED / מערך ניטור שעמום</h1>
+        <span class="live-tag">NATIONAL BOREDOM CENTER</span>
+        <h1>I AM BORED / הפיקוד הלאומי לשעמום</h1>
         <h2 id="status-text">כן.</h2>
-        <p id="sub-status" style="color: #888;">התנאים אופטימליים לחפיפה כפולה כולל מרכך.</p>
+        <p id="sub-status" style="color: #888;">שגרה משמימה. ניתן להוסיף מרכך ולהישאר עוד 5 דקות.</p>
     </div>
 
     <div class="dashboard">
+        <!-- כרטיס מדד -->
         <div class="card">
-            <h3>מדד שעמום לאומי</h3>
-            <div style="font-size: 3rem; font-weight: 800;" id="meter-val">9.8</div>
+            <h3>מדד שעמום לאומי (משוקלל)</h3>
+            <div style="font-size: 3.5rem; font-weight: 800;" id="meter-val">9.8</div>
             <div class="meter-bar"><div id="meter-fill"></div></div>
-            <p id="meter-desc" style="font-size: 0.8rem; color: #aaa;">סיכוי אפסי לפעילות מעניינת בדקות הקרובות.</p>
+            <p id="meter-desc" style="font-size: 0.85rem; color: #888;">סיכוי אפסי לפעילות מעניינת ב-24 השעות הקרובות.</p>
         </div>
 
+        <!-- כרטיס מפת אזורים -->
         <div class="card">
-            <h3>דיווחים מהשטח</h3>
-            <div id="field-reports" style="font-size: 0.9rem; line-height: 1.8;">
-                • סריקת אזור מרכז: <b>משעמם</b><br>
-                • דרום: <b>שקט יחסית</b><br>
-                • צפון: <b>דריכות משמימה</b>
+            <h3>סטטוס מוקדי עניין</h3>
+            <div class="regions-list">
+                <div class="region-row"><span><span class="status-dot"></span>תל אביב</span> <span>פקקים ופחמימות</span></div>
+                <div class="region-row"><span><span class="status-dot"></span>ירושלים</span> <span>רוח קרירה וקדושה</span></div>
+                <div class="region-row"><span><span class="status-dot"></span>צפון / דרום</span> <span>דריכות חסרת פשר</span></div>
+                <div class="region-row"><span><span class="status-dot"></span>פתח תקווה</span> <span>מדד שעמום: 11/10</span></div>
+            </div>
+        </div>
+
+        <!-- כרטיס פעילויות -->
+        <div class="card" style="grid-column: span 1;">
+            <h3>פרוטוקול התנהגות מומלץ</h3>
+            <div id="instructions" style="font-size: 0.95rem; line-height: 1.7; color: #bbb;">
+                • סריקת המקרר בחיפוש אחר משהו שלא קיים.<br>
+                • בהייה בתקרה ותהייה למה החיים ככה.<br>
+                • פתיחת קבוצת הוואטסאפ 'השכונה' כל 3 דקות.
             </div>
         </div>
     </div>
 
     <div class="controls">
-        <button id="btn-safe" class="active" onclick="update('safe')">שגרה</button>
-        <button id="btn-tense" onclick="update('tense')">מתיחות</button>
-        <button id="btn-action" onclick="update('action')">אקשן</button>
+        <button id="btn-safe" class="active" onclick="update('safe')">שגרה מוחלטת</button>
+        <button id="btn-tense" onclick="update('tense')">מתיחות קלה</button>
+        <button id="btn-action" onclick="update('action')">יש אקשן</button>
     </div>
 
     <div class="ticker-wrap">
         <div class="ticker">
-            +++ מבזק: רמת השעמום בפתח תקווה שברה שיא חדש +++ דיווח: נגמרה הבמבה במקלט של קומה 2 +++ התרעה: שכן חדש נכנס לבניין עם פיג'מה לא תואמת +++ עדכון: אין עדכון, וזה בדיוק העדכון +++
+            +++ מבזק: רמת השעמום בפתח תקווה עקפה את הממוצע הארצי +++ דיווח שטח: השכן בקומה 4 שוב שכח את המפתח במנעול +++ התרעה: נגמרה הבמבה במקלט של משפחת כהן +++ עדכון: אין שום דבר מעניין לדווח, וזה בדיוק העדכון +++
         </div>
     </div>
 
@@ -117,52 +134,39 @@
             const mv = document.getElementById('meter-val');
             const mf = document.getElementById('meter-fill');
             const md = document.getElementById('meter-desc');
+            const inst = document.getElementById('instructions');
             
-            // עדכון כפתורים
             document.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
             document.getElementById('btn-' + mode).classList.add('active');
 
             if (mode === 'safe') {
                 b.className = 'mode-safe';
                 s.innerText = "כן.";
-                sub.innerText = "התנאים אופטימליים לחפיפה כפולה כולל מרכך.";
+                sub.innerText = "שגרה משמימה. ניתן להוסיף מרכך ולהישאר עוד 5 דקות.";
                 mv.innerText = "9.8";
                 mf.style.width = "98%";
-                md.innerText = "סיכוי אפסי לפעילות מעניינת בדקות הקרובות.";
+                md.innerText = "סיכוי אפסי לפעילות מעניינת ב-24 השעות הקרובות.";
+                inst.innerHTML = "• סריקת המקרר בחיפוש אחר משהו שלא קיים.<br>• בהייה בתקרה ותהייה למה החיים ככה.<br>• פתיחת וואטסאפ 'השכונה' כל 3 דקות.";
             } else if (mode === 'tense') {
                 b.className = 'mode-tense';
                 s.innerText = "חכה.";
                 sub.innerText = "מומלץ להתקלח עם דלת פתוחה ושמפו בעיניים פתוחות.";
                 mv.innerText = "4.2";
                 mf.style.width = "42%";
-                md.innerText = "מתחיל להיות מעניין. הממ\"ד נראה פתאום מזמין.";
+                md.innerText = "השעמום בסכנה. הממ\"ד נראה פתאום מזמין.";
+                inst.innerHTML = "• להכין תיק עם מטען, במבה ומים.<br>• להקשיב לכל אופנוע שעובר ברחוב.<br>• לסדר את הממ\"ד (פעם ב-10 שנים).";
             } else if (mode === 'action') {
                 b.className = 'mode-action';
                 s.innerText = "לא.";
-                sub.innerText = "צא מהמקלחת, תיכנס לממ\"ד, ותדרג את הפיג'מות.";
+                sub.innerText = "צא מהמקלחת, כנס לממ\"ד, ותדרג את הפיג'מות של כולם.";
                 mv.innerText = "0.2";
                 mf.style.width = "5%";
                 md.innerText = "שיא האקשן! מי בכלל זוכר מה זה שעמום?";
+                inst.innerHTML = "• תחרות זיהוי יירוטים עם השכנים במדרגות.<br>• דירוג הפיג'מות של דיירי הבניין.<br>• לא לצאת למרפסת עם הטלפון, זה לא סרט!";
             }
         }
-
-        // ניסיון ראשוני למשיכת נתונים אמיתיים (דרך שרת מתווך כדי למנוע חסימה)
-        async function fetchRealAlerts() {
-            try {
-                // נשתמש ב-API ציבורי של היסטוריית התרעות (דוגמה למקור חיצוני)
-                const response = await fetch('https://www.oref.org.il');
-                const data = await response.json();
-                if (data && data.length > 0) {
-                   console.log("יש התרעות אמת, האתר יכול להגיב לזה בעתיד!");
-                }
-            } catch (e) {
-                console.log("ממתין לעדכוני שטח...");
-            }
-        }
-        setInterval(fetchRealAlerts, 10000); // בדיקה כל 10 שניות
     </script>
 </body>
 </html>
-
 
 
