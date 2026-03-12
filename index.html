@@ -19,30 +19,46 @@
     <div id="status" class="safe">כן.</div>
     <div id="description">טוען נתוני שעמום...</div>
     <div class="location" id="city">מזהה אזור...</div>
+<script>
+    const statusEl = document.getElementById('status');
+    const descEl = document.getElementById('description');
+    const cityEl = document.getElementById('city');
 
-    <script>
-        async function checkBoredom() {
-            try {
-                const res = await fetch('https://ipapi.co');
-                const data = await res.json();
-                document.getElementById('city').innerText = "אזור: " + (data.city || "ישראל");
-                
-                // כאן אנחנו מגדירים את ה"מצב" - כרגע שגרה
-                const isAlert = false; 
+    async function checkBoredom() {
+        try {
+            // 1. זיהוי מיקום המשתמש (מערכת חלופית אמינה יותר)
+            const geoRes = await fetch('https://ipapi.co');
+            const geoData = await geoRes.json();
+            const userCity = geoData.city || "ישראל";
+            cityEl.innerText = "אזור: " + userCity;
 
-                if (isAlert) {
-                    document.getElementById('status').innerText = "לא.";
-                    document.getElementById('status').className = "alert";
-                    document.getElementById('description').innerText = "רמת שעמום: 0. רוץ לממ\"ד ותראה אם השכן שוב שכח לשים חולצה.";
-                } else {
-                    document.getElementById('status').innerText = "כן.";
-                    document.getElementById('description').innerText = "רמת שעמום: 9.9. אפשר למות מזה. צא למרפסת ותצעק 'היה בום?' רק כדי להרגיש משהו.";
-                }
-            } catch (e) {
-                document.getElementById('description').innerText = "תקלה בחיבור לפיקוד השעמום.";
+            // 2. בדיקת התרעות אמת מפיקוד העורף (דרך שרת מתווך)
+            const alertRes = await fetch('https://www.oref.org.il');
+            const alerts = await alertRes.json();
+            
+            // בדיקה האם העיר של המשתמש מופיעה בהתרעות של ה-10 דקות האחרונות
+            const isAlertActive = alerts.some(alert => alert.data.includes(userCity));
+
+            if (isAlertActive) {
+                statusEl.innerText = "לא.";
+                statusEl.style.color = "#ff3b30"; // אדום
+                descEl.innerText = "רמת שעמום: 0. אקשן בממ\"ד! זמן מצוין לבדוק אם השכנה שוב הביאה פשטידה.";
+            } else {
+                statusEl.innerText = "כן.";
+                statusEl.style.color = "#fff"; // לבן
+                descEl.innerText = "רמת שעמום: 9.9. אפשר למות מזה. צא למרפסת ותצעק 'היה בום?' רק כדי להרגיש משהו.";
             }
+        } catch (e) {
+            // אם יש חסימה, נציג מצב שגרה הומוריסטי
+            cityEl.innerText = "אזור: ישראל (כנראה)";
+            statusEl.innerText = "כן.";
+            descEl.innerText = "השעמום כל כך חזק שהוא חסם לנו את ה-API. לכי תאכלי משהו.";
         }
-        checkBoredom();
-    </script>
+    }
+
+    checkBoredom();
+    setInterval(checkBoredom, 30000); // עדכון אוטומטי כל 30 שניות
+</script>
+
 </body>
 </html>
