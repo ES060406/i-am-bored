@@ -16,92 +16,83 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
-            overflow: hidden;
+            text-align: center;
         }
 
-        .container { text-align: center; width: 90%; max-width: 600px; }
+        .container { width: 90%; max-width: 600px; }
 
-        h1 { font-size: 1rem; letter-spacing: 4px; color: #444; margin-bottom: 30px; text-transform: uppercase; }
+        h1 { font-size: 1rem; letter-spacing: 5px; color: #444; margin-bottom: 20px; }
 
-        #main-status { font-size: 8rem; font-weight: 900; line-height: 1; margin: 10px 0; transition: all 0.3s ease; }
+        #main-status { font-size: 8rem; font-weight: 900; line-height: 1; margin: 10px 0; transition: all 0.4s ease; }
 
-        #description { font-size: 1.4rem; margin-bottom: 40px; min-height: 4em; color: #ccc; line-height: 1.4; }
+        #description { font-size: 1.5rem; margin-bottom: 40px; min-height: 4em; color: #ccc; line-height: 1.4; }
 
-        .location-tag { background: #1a1a1a; padding: 6px 18px; border-radius: 20px; font-size: 0.85rem; color: #666; margin-bottom: 30px; display: inline-block; }
+        .national-avg { background: #1a1a1a; padding: 10px 20px; border-radius: 50px; font-size: 0.9rem; color: #888; margin-bottom: 40px; border: 1px solid #333; }
 
-        .btn-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .btn-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
         button {
-            background: transparent;
-            color: #888;
-            border: 1px solid #333;
-            padding: 10px 20px;
-            font-size: 0.9rem;
+            background: #111;
+            color: #fff;
+            border: 1px solid #444;
+            padding: 12px 24px;
+            font-size: 1rem;
             cursor: pointer;
-            border-radius: 5px;
-            transition: all 0.2s;
+            border-radius: 8px;
+            transition: 0.3s;
         }
 
-        button:hover { border-color: #fff; color: #fff; }
-        
-        button.active { background: #fff; color: #000; border-color: #fff; }
+        button:hover { background: #fff; color: #000; border-color: #fff; }
 
-        /* צבעים לפי מצב */
-        .safe { color: #fff; } 
-        .alert { color: #ff3b30; text-shadow: 0 0 20px rgba(255, 59, 48, 0.4); }
-        .wait { color: #ffcc00; text-shadow: 0 0 20px rgba(255, 204, 0, 0.4); }
+        /* צבעים */
+        .white { color: #fff; }
+        .red { color: #ff3b30; text-shadow: 0 0 15px rgba(255, 59, 48, 0.5); }
+        .yellow { color: #ffcc00; text-shadow: 0 0 15px rgba(255, 204, 0, 0.5); }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>I AM BORED</h1>
-        <div id="main-status" class="safe">...</div>
-        <div id="description">אנא בחרו אזור לבדיקת רמת השעמום</div>
-        <div class="location-tag" id="city-display">ממתין לבחירה</div>
+        
+        <div class="national-avg">שקלול ארצי: <b>משעמם טילים (9.2)</b></div>
+
+        <div id="main-status" class="white">כן.</div>
+        
+        <div id="description">
+            המצב הנוכחי מאפשר התקלחות בטוחה, קיפול כביסה ובהייה בקיר למשך 20 דקות.
+        </div>
         
         <div class="btn-group">
-            <button onclick="updateBoredom('מרכז', this)">מרכז</button>
-            <button onclick="updateBoredom('דרום', this)">דרום/עוטף</button>
-            <button onclick="updateBoredom('צפון', this)">צפון</button>
-            <button onclick="updateBoredom('ירושלים', this)">ירושלים</button>
+            <button onclick="setStatus('safe')">הכל שקט</button>
+            <button onclick="setStatus('tense')">מתיחות</button>
+            <button onclick="setStatus('action')">יש אקשן</button>
         </div>
     </div>
 
     <script>
-        function updateBoredom(region, btn) {
+        function setStatus(mode) {
             const statusEl = document.getElementById('main-status');
             const descEl = document.getElementById('description');
-            const cityEl = document.getElementById('city-display');
 
-            // הסרת עיצוב מהכפתורים האחרים
-            document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            cityEl.innerText = "נבדק עבור: " + region;
-
-            if (region === 'מרכז') {
+            if (mode === 'safe') {
                 statusEl.innerText = "כן.";
-                statusEl.className = "safe";
-                descEl.innerText = "רמת שעמום: 9.8. אתם בודקים בטלגרם אם הבומים היו רעמים או יירוטים מעל הים. לכו לשתות מאצ'ה ולחפש חניה.";
+                statusEl.className = "white";
+                descEl.innerText = "רמת שעמום: 10. צאו למרפסת ותשאלו 'היה בום?' רק כדי להרגיש משהו בלב.";
             } 
-            else if (region === 'דרום') {
+            else if (mode === 'tense') {
                 statusEl.innerText = "חכה.";
-                statusEl.className = "wait";
-                descEl.innerText = "רמת שעמום: 2. אתם הגיבורים של המדינה. לכו לישון בממ\"ד עם חבילת במבה, זה הזמן הכי מעניין שיהיה לכם היום.";
+                statusEl.className = "yellow";
+                descEl.innerText = "רמת שעמום: 4. זמן מצוין לסדר את המדף של השימורים בממ\"ד לפי תאריכי תפוגה.";
             } 
-            else if (region === 'צפון') {
+            else if (mode === 'action') {
                 statusEl.innerText = "לא.";
-                statusEl.className = "alert";
-                descEl.innerText = "רמת שעמום: 0. הציפורים מצייצות, אבל אלו לא ציפורים. נא להישאר ליד המקלט ולתהות אם הצימר שסגרתם יחזור אי פעם.";
-            }
-            else if (region === 'ירושלים') {
-                statusEl.innerText = "כן.";
-                statusEl.className = "safe";
-                descEl.innerText = "רמת שעמום: 10. פה לא קורה כלום חוץ מפקקים ורוח קרירה. לכו לאכול מעורב ירושלמי ותקומו ב-2027.";
+                statusEl.className = "red";
+                descEl.innerText = "רמת שעמום: 0. סוף סוף קורה משהו! רוצו לממ\"ד ותראו אם השכן שוב נכנס בלי חולצה.";
             }
         }
     </script>
 </body>
 </html>
+
 
