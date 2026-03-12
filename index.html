@@ -3,92 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I AM BORED - מדד השעמום הלאומי</title>
+    <title>I AM BORED - מרכז ניהול השעמום הלאומי</title>
     <link href="https://fonts.googleapis.com" rel="stylesheet">
     <style>
-        body {
-            background-color: #000;
-            color: #fff;
-            font-family: 'Assistant', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
-        }
+        :root { --bg: #0a0a0a; --card: #151515; --accent: #ffffff; --red: #ff3b30; --yellow: #ffcc00; }
+        body { background-color: var(--bg); color: #fff; font-family: 'Assistant', sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        
+        .header { text-align: center; margin-bottom: 40px; border-bottom: 1px solid #333; width: 100%; max-width: 800px; padding-bottom: 20px; }
+        h1 { font-size: 0.9rem; letter-spacing: 6px; color: #666; margin: 0; text-transform: uppercase; }
+        .main-status-wrap { margin: 30px 0; }
+        #status-text { font-size: 7rem; font-weight: 900; margin: 0; line-height: 1; transition: 0.3s; }
+        
+        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; max-width: 800px; }
+        .card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #222; text-align: right; }
+        .full-width { grid-column: span 2; }
+        
+        h3 { margin-top: 0; color: #888; font-size: 0.9rem; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        
+        .boredom-meter { height: 10px; background: #222; border-radius: 5px; margin: 15px 0; overflow: hidden; position: relative; }
+        #meter-fill { height: 100%; width: 92%; background: linear-gradient(90deg, var(--red), var(--yellow), #fff); transition: 0.5s; }
+        
+        .activity-list { list-style: none; padding: 0; margin: 0; }
+        .activity-list li { padding: 10px 0; border-bottom: 1px solid #222; font-size: 0.95rem; display: flex; justify-content: space-between; }
+        .activity-list li span { color: #555; font-size: 0.8rem; }
 
-        .container { width: 90%; max-width: 600px; }
-
-        h1 { font-size: 1rem; letter-spacing: 5px; color: #444; margin-bottom: 20px; }
-
-        #main-status { font-size: 8rem; font-weight: 900; line-height: 1; margin: 10px 0; transition: all 0.4s ease; }
-
-        #description { font-size: 1.5rem; margin-bottom: 40px; min-height: 4em; color: #ccc; line-height: 1.4; }
-
-        .national-avg { background: #1a1a1a; padding: 10px 20px; border-radius: 50px; font-size: 0.9rem; color: #888; margin-bottom: 40px; border: 1px solid #333; }
-
-        .btn-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-
-        button {
-            background: #111;
-            color: #fff;
-            border: 1px solid #444;
-            padding: 12px 24px;
-            font-size: 1rem;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: 0.3s;
-        }
-
+        .control-panel { margin-top: 40px; display: flex; gap: 10px; }
+        button { background: #222; color: #fff; border: 1px solid #444; padding: 12px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; }
         button:hover { background: #fff; color: #000; border-color: #fff; }
+        
+        .footer { margin-top: 50px; color: #444; font-size: 0.8rem; text-align: center; max-width: 500px; }
 
-        /* צבעים */
-        .white { color: #fff; }
-        .red { color: #ff3b30; text-shadow: 0 0 15px rgba(255, 59, 48, 0.5); }
-        .yellow { color: #ffcc00; text-shadow: 0 0 15px rgba(255, 204, 0, 0.5); }
+        /* מצבי צבע */
+        .mode-safe #status-text { color: #fff; }
+        .mode-tense #status-text { color: var(--yellow); text-shadow: 0 0 20px rgba(255, 204, 0, 0.3); }
+        .mode-action #status-text { color: var(--red); text-shadow: 0 0 20px rgba(255, 59, 48, 0.3); }
     </style>
 </head>
-<body>
+<body class="mode-safe">
 
-    <div class="container">
-        <h1>I AM BORED</h1>
-        
-        <div class="national-avg">שקלול ארצי: <b>משעמם טילים (9.2)</b></div>
-
-        <div id="main-status" class="white">כן.</div>
-        
-        <div id="description">
-            המצב הנוכחי מאפשר התקלחות בטוחה, קיפול כביסה ובהייה בקיר למשך 20 דקות.
-        </div>
-        
-        <div class="btn-group">
-            <button onclick="setStatus('safe')">הכל שקט</button>
-            <button onclick="setStatus('tense')">מתיחות</button>
-            <button onclick="setStatus('action')">יש אקשן</button>
+    <div class="header">
+        <h1>I AM BORED / מערכת ניהול זמן במלחמה</h1>
+        <div class="main-status-wrap">
+            <p style="margin: 0; color: #888;">האם אפשר להשתעמם עכשיו?</p>
+            <h2 id="status-text">כן.</h2>
         </div>
     </div>
 
+    <div class="dashboard">
+        <!-- כרטיס מדד -->
+        <div class="card">
+            <h3>מדד שעמום לאומי (משוקלל)</h3>
+            <div style="font-size: 2.5rem; font-weight: 800;" id="meter-val">9.2</div>
+            <div class="boredom-meter"><div id="meter-fill"></div></div>
+            <p id="meter-desc" style="font-size: 0.9rem; color: #aaa;">שגרה משמימה. סכנת הירדמות על הספה.</p>
+        </div>
+
+        <!-- כרטיס סטטוס מהיר -->
+        <div class="card">
+            <h3>סטטוס התקלחות</h3>
+            <div id="shower-status" style="font-size: 1.2rem; margin-top: 10px; color: #4caf50;">✅ מאושר (כולל מרכך)</div>
+            <p style="font-size: 0.8rem; color: #666; margin-top: 15px;">זמן משוער עד ה"בום" הבא: לא ידוע. תהנו מהמים.</p>
+        </div>
+
+        <!-- כרטיס פעילויות -->
+        <div class="card full-width">
+            <h3>פרוטוקול פעילויות מאושרות</h3>
+            <ul class="activity-list" id="activities">
+                <li>קיפול כביסה בדרגת קושי גבוהה <span>מורשה</span></li>
+                <li>בהייה בתקרה ותהייה על משמעות החיים <span>מומלץ</span></li>
+                <li>בדיקת קבוצת הוואטסאפ השכונתית כל 3 דקות <span>חובה</span></li>
+                <li>ניסיון להבין אם זה היה טריקת דלת או יירוט <span>ספורט לאומי</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="control-panel">
+        <button onclick="changeMode('safe')">הכל שקט</button>
+        <button onclick="changeMode('tense')">מתיחות</button>
+        <button onclick="changeMode('action')">יש אקשן</button>
+    </div>
+
+    <div class="footer">
+        הנתונים באתר זה מבוססים על רמת השעמום האישית של הכותב. במקרה של אזעקת אמת, נא להקשיב לפיקוד העורף ולא לבדיחות שלנו.
+    </div>
+
     <script>
-        function setStatus(mode) {
-            const statusEl = document.getElementById('main-status');
-            const descEl = document.getElementById('description');
+        function changeMode(mode) {
+            const body = document.body;
+            const statusText = document.getElementById('status-text');
+            const showerStatus = document.getElementById('shower-status');
+            const meterVal = document.getElementById('meter-val');
+            const meterFill = document.getElementById('meter-fill');
+            const meterDesc = document.getElementById('meter-desc');
+            const activities = document.getElementById('activities');
 
             if (mode === 'safe') {
-                statusEl.innerText = "כן.";
-                statusEl.className = "white";
-                descEl.innerText = "רמת שעמום: 10. צאו למרפסת ותשאלו 'היה בום?' רק כדי להרגיש משהו בלב.";
-            } 
-            else if (mode === 'tense') {
-                statusEl.innerText = "חכה.";
-                statusEl.className = "yellow";
-                descEl.innerText = "רמת שעמום: 4. זמן מצוין לסדר את המדף של השימורים בממ\"ד לפי תאריכי תפוגה.";
-            } 
-            else if (mode === 'action') {
-                statusEl.innerText = "לא.";
-                statusEl.className = "red";
-                descEl.innerText = "רמת שעמום: 0. סוף סוף קורה משהו! רוצו לממ\"ד ותראו אם השכן שוב נכנס בלי חולצה.";
+                body.className = 'mode-safe';
+                statusText.innerText = "כן.";
+                showerStatus.innerText = "✅ מאושר (כולל מרכך)";
+                showerStatus.style.color = "#4caf50";
+                meterVal.innerText = "9.2";
+                meterFill.style.width = "92%";
+                meterDesc.innerText = "שגרה משמימה. סכנת הירדמות על הספה.";
+                activities.innerHTML = `
+                    <li>קיפול כביסה בדרגת קושי גבוהה <span>מורשה</span></li>
+                    <li>בהייה בתקרה ותהייה על משמעות החיים <span>מומלץ</span></li>
+                    <li>יציאה למרפסת וצעקה 'היה בום?' <span>ספורט לאומי</span></li>
+                `;
+            } else if (mode === 'tense') {
+                body.className = 'mode-tense';
+                statusText.innerText = "חכה.";
+                showerStatus.innerText = "⚠️ מהר ובלי שמפו בעיניים";
+                showerStatus.style.color = "#ffcc00";
+                meterVal.innerText = "4.5";
+                meterFill.style.width = "45%";
+                meterDesc.innerText = "מתחיל להיות מעניין. הממ\"ד נראה מזמין.";
+                activities.innerHTML = `
+                    <li>סידור המזווה בממ"ד לפי א-ב <span>חיוני</span></li>
+                    <li>הקשבה אינטנסיבית לרעשי אופנועים <span>בביצוע</span></li>
+                    <li>הכנת תיק עם מטען וחטיפים <span>דחוף</span></li>
+                `;
+            } else if (mode === 'action') {
+                body.className = 'mode-action';
+                statusText.innerText = "לא.";
+                showerStatus.innerText = "❌ לא להתקרב למים!";
+                showerStatus.style.color = "#ff3b30";
+                meterVal.innerText = "0.1";
+                meterFill.style.width = "5%";
+                meterDesc.innerText = "שיא האקשן! מי משועמם עכשיו?";
+                activities.innerHTML = `
+                    <li>תחרות זיהוי יירוטים עם השכנים <span>מורשה</span></li>
+                    <li>דירוג הפיג'מות של דיירי הבניין <span>מומלץ</span></li>
+                    <li>בדיקה אם השכן שוב נכנס בלי חולצה <span>חובה</span></li>
+                `;
             }
         }
     </script>
