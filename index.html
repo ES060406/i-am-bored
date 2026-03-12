@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>I AM BORED - מדד השעמום</title>
+    <style>
+        body { background: #000; color: #fff; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .container { text-align: center; border: 1px solid #333; padding: 50px; border-radius: 15px; }
+        h1 { font-size: 4rem; margin: 0; }
+        #status { font-size: 1.5rem; color: #888; margin-top: 10px; }
+        .boredom-meter { font-size: 2rem; color: #ff9800; margin-top: 30px; font-weight: bold; }
+        .action { font-size: 1.2rem; color: #4caf50; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>I AM BORED</h1>
+        <div id="status">מזהה מיקום ומנתח איומי שעמום...</div>
+        <div id="result" style="display:none;">
+            <div class="boredom-meter" id="meter">מדד שעמום: טוען...</div>
+            <div class="action" id="joke"></div>
+        </div>
+    </div>
+
+    <script>
+        // כאן נשתמש ב-API חינמי לזיהוי עיר לפי IP כדי שלא נצטרך אישור מיקום מציק
+        fetch('https://ipapi.co')
+            .then(res => res.json())
+            .then(data => {
+                const city = data.city;
+                document.getElementById('status').innerText = "מיקום זוהה: " + city;
+                document.getElementById('result').style.display = "block";
+                
+                // לוגיקה זמנית עד שנחבר את פיקוד העורף
+                const isSafe = true; 
+                
+                if(isSafe) {
+                    document.getElementById('meter').innerText = "רמת שעמום: 9.8 (סכנת הירדמות)";
+                    document.getElementById('joke').innerText = "הנחיה: צא/י למרפסת ותצעק/י 'היה בום?' כדי לעורר עניין.";
+                }
+            });
+    </script>
+</body>
+</html>
