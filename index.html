@@ -2,43 +2,47 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>I AM BORED - מדד השעמום</title>
     <style>
-        body { background: #000; color: #fff; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .container { text-align: center; border: 1px solid #333; padding: 50px; border-radius: 15px; }
-        h1 { font-size: 4rem; margin: 0; }
-        #status { font-size: 1.5rem; color: #888; margin-top: 10px; }
-        .boredom-meter { font-size: 2rem; color: #ff9800; margin-top: 30px; font-weight: bold; }
-        .action { font-size: 1.2rem; color: #4caf50; margin-top: 20px; }
+        body { background-color: #000; color: #fff; font-family: system-ui, -apple-system, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center; }
+        h1 { font-size: 1.2rem; color: #444; letter-spacing: 3px; margin-bottom: 20px; }
+        #status { font-size: 6rem; font-weight: 900; margin: 10px 0; }
+        #description { font-size: 1.5rem; max-width: 80%; margin-bottom: 30px; min-height: 3em; }
+        .location { background: #1a1a1a; padding: 8px 20px; border-radius: 50px; font-size: 0.9rem; color: #888; }
+        .safe { color: #fff; }
+        .alert { color: #ff3b30; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>I AM BORED</h1>
-        <div id="status">מזהה מיקום ומנתח איומי שעמום...</div>
-        <div id="result" style="display:none;">
-            <div class="boredom-meter" id="meter">מדד שעמום: טוען...</div>
-            <div class="action" id="joke"></div>
-        </div>
-    </div>
+    <h1>I AM BORED</h1>
+    <div id="status" class="safe">כן.</div>
+    <div id="description">טוען נתוני שעמום...</div>
+    <div class="location" id="city">מזהה אזור...</div>
 
     <script>
-        // כאן נשתמש ב-API חינמי לזיהוי עיר לפי IP כדי שלא נצטרך אישור מיקום מציק
-        fetch('https://ipapi.co')
-            .then(res => res.json())
-            .then(data => {
-                const city = data.city;
-                document.getElementById('status').innerText = "מיקום זוהה: " + city;
-                document.getElementById('result').style.display = "block";
+        async function checkBoredom() {
+            try {
+                const res = await fetch('https://ipapi.co');
+                const data = await res.json();
+                document.getElementById('city').innerText = "אזור: " + (data.city || "ישראל");
                 
-                // לוגיקה זמנית עד שנחבר את פיקוד העורף
-                const isSafe = true; 
-                
-                if(isSafe) {
-                    document.getElementById('meter').innerText = "רמת שעמום: 9.8 (סכנת הירדמות)";
-                    document.getElementById('joke').innerText = "הנחיה: צא/י למרפסת ותצעק/י 'היה בום?' כדי לעורר עניין.";
+                // כאן אנחנו מגדירים את ה"מצב" - כרגע שגרה
+                const isAlert = false; 
+
+                if (isAlert) {
+                    document.getElementById('status').innerText = "לא.";
+                    document.getElementById('status').className = "alert";
+                    document.getElementById('description').innerText = "רמת שעמום: 0. רוץ לממ\"ד ותראה אם השכן שוב שכח לשים חולצה.";
+                } else {
+                    document.getElementById('status').innerText = "כן.";
+                    document.getElementById('description').innerText = "רמת שעמום: 9.9. אפשר למות מזה. צא למרפסת ותצעק 'היה בום?' רק כדי להרגיש משהו.";
                 }
-            });
+            } catch (e) {
+                document.getElementById('description').innerText = "תקלה בחיבור לפיקוד השעמום.";
+            }
+        }
+        checkBoredom();
     </script>
 </body>
 </html>
