@@ -3,63 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I AM BORED - מדד השעמום</title>
+    <title>I AM BORED - מדד השעמום הלאומי</title>
+    <link href="https://fonts.googleapis.com" rel="stylesheet">
     <style>
-        body { background-color: #000; color: #fff; font-family: system-ui, -apple-system, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center; }
-        h1 { font-size: 1.2rem; color: #444; letter-spacing: 3px; margin-bottom: 20px; }
-        #status { font-size: 6rem; font-weight: 900; margin: 10px 0; }
-        #description { font-size: 1.5rem; max-width: 80%; margin-bottom: 30px; min-height: 3em; }
-        .location { background: #1a1a1a; padding: 8px 20px; border-radius: 50px; font-size: 0.9rem; color: #888; }
-        .safe { color: #fff; }
-        .alert { color: #ff3b30; }
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Assistant', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container { text-align: center; width: 90%; max-width: 600px; }
+
+        h1 { font-size: 1rem; letter-spacing: 4px; color: #444; margin-bottom: 30px; text-transform: uppercase; }
+
+        #main-status { font-size: 8rem; font-weight: 900; line-height: 1; margin: 10px 0; transition: all 0.3s ease; }
+
+        #description { font-size: 1.4rem; margin-bottom: 40px; min-height: 4em; color: #ccc; line-height: 1.4; }
+
+        .location-tag { background: #1a1a1a; padding: 6px 18px; border-radius: 20px; font-size: 0.85rem; color: #666; margin-bottom: 30px; display: inline-block; }
+
+        .btn-group { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+        button {
+            background: transparent;
+            color: #888;
+            border: 1px solid #333;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.2s;
+        }
+
+        button:hover { border-color: #fff; color: #fff; }
+        
+        button.active { background: #fff; color: #000; border-color: #fff; }
+
+        /* צבעים לפי מצב */
+        .safe { color: #fff; } 
+        .alert { color: #ff3b30; text-shadow: 0 0 20px rgba(255, 59, 48, 0.4); }
+        .wait { color: #ffcc00; text-shadow: 0 0 20px rgba(255, 204, 0, 0.4); }
     </style>
 </head>
 <body>
-    <h1>I AM BORED</h1>
-    <div id="status" class="safe">כן.</div>
-    <div id="description">טוען נתוני שעמום...</div>
-    <div class="location" id="city">מזהה אזור...</div>
-    
-<script>
-    const statusEl = document.getElementById('status');
-    const descEl = document.getElementById('description');
-    const cityEl = document.getElementById('city');
 
-    async function checkBoredom() {
-        try {
-            // 1. זיהוי מיקום המשתמש (מערכת חלופית אמינה יותר)
-            const geoRes = await fetch('https://ipapi.co');
-            const geoData = await geoRes.json();
-            const userCity = geoData.city || "ישראל";
-            cityEl.innerText = "אזור: " + userCity;
+    <div class="container">
+        <h1>I AM BORED</h1>
+        <div id="main-status" class="safe">...</div>
+        <div id="description">אנא בחרו אזור לבדיקת רמת השעמום</div>
+        <div class="location-tag" id="city-display">ממתין לבחירה</div>
+        
+        <div class="btn-group">
+            <button onclick="updateBoredom('מרכז', this)">מרכז</button>
+            <button onclick="updateBoredom('דרום', this)">דרום/עוטף</button>
+            <button onclick="updateBoredom('צפון', this)">צפון</button>
+            <button onclick="updateBoredom('ירושלים', this)">ירושלים</button>
+        </div>
+    </div>
 
-            // 2. בדיקת התרעות אמת מפיקוד העורף (דרך שרת מתווך)
-            const alertRes = await fetch('https://www.oref.org.il');
-            const alerts = await alertRes.json();
-            
-            // בדיקה האם העיר של המשתמש מופיעה בהתרעות של ה-10 דקות האחרונות
-            const isAlertActive = alerts.some(alert => alert.data.includes(userCity));
+    <script>
+        function updateBoredom(region, btn) {
+            const statusEl = document.getElementById('main-status');
+            const descEl = document.getElementById('description');
+            const cityEl = document.getElementById('city-display');
 
-            if (isAlertActive) {
-                statusEl.innerText = "לא.";
-                statusEl.style.color = "#ff3b30"; // אדום
-                descEl.innerText = "רמת שעמום: 0. אקשן בממ\"ד! זמן מצוין לבדוק אם השכנה שוב הביאה פשטידה.";
-            } else {
+            // הסרת עיצוב מהכפתורים האחרים
+            document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            cityEl.innerText = "נבדק עבור: " + region;
+
+            if (region === 'מרכז') {
                 statusEl.innerText = "כן.";
-                statusEl.style.color = "#fff"; // לבן
-                descEl.innerText = "רמת שעמום: 9.9. אפשר למות מזה. צא למרפסת ותצעק 'היה בום?' רק כדי להרגיש משהו.";
+                statusEl.className = "safe";
+                descEl.innerText = "רמת שעמום: 9.8. אתם בודקים בטלגרם אם הבומים היו רעמים או יירוטים מעל הים. לכו לשתות מאצ'ה ולחפש חניה.";
+            } 
+            else if (region === 'דרום') {
+                statusEl.innerText = "חכה.";
+                statusEl.className = "wait";
+                descEl.innerText = "רמת שעמום: 2. אתם הגיבורים של המדינה. לכו לישון בממ\"ד עם חבילת במבה, זה הזמן הכי מעניין שיהיה לכם היום.";
+            } 
+            else if (region === 'צפון') {
+                statusEl.innerText = "לא.";
+                statusEl.className = "alert";
+                descEl.innerText = "רמת שעמום: 0. הציפורים מצייצות, אבל אלו לא ציפורים. נא להישאר ליד המקלט ולתהות אם הצימר שסגרתם יחזור אי פעם.";
             }
-        } catch (e) {
-            // אם יש חסימה, נציג מצב שגרה הומוריסטי
-            cityEl.innerText = "אזור: ישראל (כנראה)";
-            statusEl.innerText = "כן.";
-            descEl.innerText = "השעמום כל כך חזק שהוא חסם לנו את ה-API. לכי תאכלי משהו.";
+            else if (region === 'ירושלים') {
+                statusEl.innerText = "כן.";
+                statusEl.className = "safe";
+                descEl.innerText = "רמת שעמום: 10. פה לא קורה כלום חוץ מפקקים ורוח קרירה. לכו לאכול מעורב ירושלמי ותקומו ב-2027.";
+            }
         }
-    }
-
-    checkBoredom();
-    setInterval(checkBoredom, 30000); // עדכון אוטומטי כל 30 שניות
-</script>
-
+    </script>
 </body>
 </html>
+
