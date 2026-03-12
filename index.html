@@ -82,26 +82,64 @@
             +++ מבזק: רמת השעמום בפתח תקווה עקפה את הממוצע הארצי +++ דיווח שטח: השכן בקומה 4 שוב שכח את המפתח במנעול +++ התרעה: נגמרה הבמבה במקלט של משפחת כהן +++ עדכון: אין שום דבר מעניין לדווח, וזה בדיוק העדכון +++
         </div>
     </div>
-    <script>
-        function update(mode) {
-            const b = document.body;
-            const s = document.getElementById('status-text');
-            const sub = document.getElementById('sub-status');
-            const mv = document.getElementById('meter-val');
-            const mf = document.getElementById('meter-fill');
-            const md = document.getElementById('meter-desc');
-            const inst = document.getElementById('instructions');
-            document.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('btn-' + mode).classList.add('active');
-            if (mode === 'safe') {
-                b.className = 'mode-safe'; s.innerText = "כן."; sub.innerText = "שגרה משמימה. ניתן להוסיף מרכך ולהישאר עוד 5 דקות."; mv.innerText = "9.8"; mf.style.width = "98%"; md.innerText = "סיכוי אפסי לפעילות מעניינת ב-24 השעות הקרובות."; inst.innerHTML = "• סריקת המקרר בחיפוש אחר משהו שלא קיים.<br>• בהייה בתקרה ותהייה למה החיים ככה.<br>• פתיחת וואטסאפ 'השכונה' כל 3 דקות.";
-            } else if (mode === 'tense') {
-                b.className = 'mode-tense'; s.innerText = "חכה."; sub.innerText = "מומלץ להתקלח עם דלת פתוחה ושמפו בעיניים פתוחות."; mv.innerText = "4.2"; mf.style.width = "42%"; md.innerText = "השעמום בסכנה. הממ\"ד נראה פתאום מזמין."; inst.innerHTML = "• להכין תיק עם מטען, במבה ומים.<br>• להקשיב לכל אופנוע שעובר ברחוב.<br>• לסדר את הממ\"ד (פעם ב-10 שנים).";
-            } else if (mode === 'action') {
-                b.className = 'mode-action'; s.innerText = "לא."; sub.innerText = "צא מהמקלחת, כנס לממ\"ד, ותדרג את הפיג'מות של כולם."; mv.innerText = "0.2"; mf.style.width = "5%"; md.innerText = "שיא האקשן! מי בכלל זוכר מה זה שעמום?"; inst.innerHTML = "• תחרות זיהוי יירוטים עם השכנים במדרגות.<br>• דירוג הפיג'מות של דיירי הבניין.<br>• לא לצאת למרפסת עם הטלפון, זה לא סרט!";
-            }
+   <script>
+    // פונקציה לעדכון מצב ויזואלי (הפונקציה הקיימת שלך עם התאמות)
+    function update(mode) {
+        const b = document.body;
+        const s = document.getElementById('status-text');
+        const sub = document.getElementById('sub-status');
+        const mv = document.getElementById('meter-val');
+        const mf = document.getElementById('meter-fill');
+        const md = document.getElementById('meter-desc');
+        const inst = document.getElementById('instructions');
+        
+        document.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+        const activeBtn = document.getElementById('btn-' + mode);
+        if (activeBtn) activeBtn.classList.add('active');
+
+        if (mode === 'safe') {
+            b.className = 'mode-safe'; s.innerText = "כן."; sub.innerText = "שגרה משמימה. ניתן להוסיף מרכך ולהישאר עוד 5 דקות."; mv.innerText = "9.8"; mf.style.width = "98%"; md.innerText = "סיכוי אפסי לפעילות מעניינת ב-24 השעות הקרובות."; inst.innerHTML = "• סריקת המקרר בחיפוש אחר משהו שלא קיים.<br>• בהייה בתקרה ותהייה למה החיים ככה.<br>• פתיחת וואטסאפ 'השכונה' כל 3 דקות.";
+        } else if (mode === 'action') {
+            b.className = 'mode-action'; s.innerText = "לא."; sub.innerText = "יש התרעה פעילה! צא מהמקלחת וכנס לממ\"ד עכשיו."; mv.innerText = "0.1"; mf.style.width = "5%"; md.innerText = "שיא האקשן! מי בכלל זוכר מה זה שעמום?"; inst.innerHTML = "• תחרות זיהוי יירוטים עם השכנים במדרגות.<br>• דירוג הפיג'מות של דיירי הבניין.<br>• לא לצאת למרפסת עם הטלפון!";
         }
-    </script>
+    }
+
+    // --- החלק החדש: חיבור לפיקוד העורף ---
+    async function checkRealAlerts() {
+        try {
+            // שימוש בפרוקסי כדי לעקוף חסימת CORS
+            const proxyUrl = 'https://api.allorigins.win';
+            const targetUrl = encodeURIComponent('https://www.oref.org.il');
+            
+            const response = await fetch(proxyUrl + targetUrl);
+            const data = await response.json();
+
+            // אם יש התרעות ב-30 השניות האחרונות
+            if (data && data.length > 0) {
+                const latestAlert = data[0];
+                const alertTime = new Date(latestAlert.alertDate);
+                const now = new Date();
+                
+                // בדיקה אם ההתרעה מהדקה האחרונה
+                if (now - alertTime < 60000) {
+                    console.log("התרעה פעילה זוהתה!");
+                    update('action');
+                } else {
+                    update('safe');
+                }
+            } else {
+                update('safe');
+            }
+        } catch (e) {
+            console.log("סורק את השמיים... (ממתין לעדכונים)");
+        }
+    }
+
+    // בדיקה ראשונה והפעלה של טיימר כל 15 שניות
+    checkRealAlerts();
+    setInterval(checkRealAlerts, 15000); 
+</script>
+
 </body>
 </html>
 
