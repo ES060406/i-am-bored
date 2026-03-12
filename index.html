@@ -9,7 +9,6 @@
         :root { --bg: #050505; --card: rgba(18, 18, 18, 0.9); --border: #222; --red: #ff3b30; --yellow: #ffcc00; --green: #34c759; --radar: rgba(255, 255, 255, 0.03); }
         body { background-color: var(--bg); color: #fff; font-family: 'Assistant', sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
         
-        /* רדאר רקע */
         .radar-bg { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100vw; height: 100vw; max-width: 900px; max-height: 900px; border: 1px solid var(--radar); border-radius: 50%; z-index: -1; pointer-events: none; }
         .radar-bg::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: conic-gradient(from 0deg, transparent, var(--radar)); border-radius: 50%; animation: rotate 5s linear infinite; }
         @keyframes rotate { 100% { transform: rotate(360deg); } }
@@ -24,6 +23,10 @@
         .meter-bar { height: 12px; background: #1a1a1a; border-radius: 6px; margin: 15px 0; overflow: hidden; }
         #meter-fill { height: 100%; width: 95%; background: linear-gradient(90deg, var(--red), var(--yellow), var(--green)); transition: 1.5s ease-in-out; }
 
+        /* פילוח אזורי */
+        .region-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #1a1a1a; font-size: 0.9rem; }
+        .status-dot { height: 7px; width: 7px; border-radius: 50%; display: inline-block; margin-left: 8px; background: var(--green); }
+
         select { background: #111; color: #fff; border: 1px solid #444; padding: 10px; width: 100%; border-radius: 5px; cursor: pointer; font-family: inherit; margin-top: 10px; }
 
         .ticker-wrap { position: fixed; bottom: 0; left: 0; width: 100%; background: #000; border-top: 1px solid #222; padding: 10px 0; z-index: 10; }
@@ -33,10 +36,10 @@
         .btn-group { margin: 30px 0 100px 0; display: flex; gap: 12px; z-index: 1; justify-content: center; flex-wrap: wrap; }
         button { background: #111; color: #777; border: 1px solid #333; padding: 14px 28px; border-radius: 8px; cursor: pointer; font-weight: 800; transition: 0.3s; font-size: 0.9rem; }
         button:hover { border-color: #fff; color: #fff; }
-        button.sound-btn { color: var(--yellow); border-color: #331; }
 
         .mode-safe #status-text { color: white; }
         .mode-action #status-text { color: var(--red); text-shadow: 0 0 35px rgba(255, 59, 48, 0.4); }
+        .mode-action .status-dot { background: var(--red) !important; }
     </style>
 </head>
 <body class="mode-safe">
@@ -50,6 +53,7 @@
     </div>
 
     <div class="dashboard">
+        <!-- כרטיס מדד -->
         <div class="card">
             <h3>מדד שעמום לאומי</h3>
             <div style="font-size: 3.5rem; font-weight: 800;" id="meter-val">9.8</div>
@@ -57,8 +61,20 @@
             <p id="meter-desc" style="font-size: 0.85rem; color: #888;">סיכוי אפסי לפעילות מעניינת בדקות הקרובות.</p>
         </div>
 
+        <!-- כרטיס פילוח אזורי - החזרתי! -->
         <div class="card">
-            <h3>בחירת אזור ניטור (פיקוד העורף)</h3>
+            <h3>פילוח סטטוס אזורי</h3>
+            <div class="regions-list">
+                <div class="region-row"><span><span class="status-dot"></span>תל אביב - יפו</span> <span>פקקים ופחמימות</span></div>
+                <div class="region-row"><span><span class="status-dot"></span>ירושלים</span> <span>רוח קרירה וקדושה</span></div>
+                <div class="region-row"><span><span class="status-dot"></span>חיפה והצפון</span> <span>דריכות חסרת פשר</span></div>
+                <div class="region-row"><span><span class="status-dot"></span>באר שבע והדרום</span> <span>שקט מחשיד</span></div>
+            </div>
+        </div>
+
+        <!-- כרטיס בחירת אזור למעקב -->
+        <div class="card">
+            <h3>ניטור אישי (פיקוד העורף)</h3>
             <select id="region-select" onchange="checkAlerts()">
                 <option value="כל הארץ">כל הארץ</option>
                 <option value="תל אביב - יפו">תל אביב - יפו</option>
@@ -68,9 +84,10 @@
                 <option value="עוטף עזה">עוטף עזה</option>
                 <option value="קו העימות">קו העימות</option>
             </select>
-            <p style="font-size: 0.8rem; color: #555; margin-top: 15px;">האתר בודק התרעות אזוריות כל 15 שניות.</p>
+            <p style="font-size: 0.75rem; color: #555; margin-top: 15px;">האתר בודק התרעות אזוריות כל 15 שניות.</p>
         </div>
 
+        <!-- כרטיס טיפים -->
         <div class="card">
             <h3>פרוטוקול שעמום אקטיבי</h3>
             <div id="boring-tips" style="font-size: 0.95rem; line-height: 1.7; color: #bbb;">
@@ -82,7 +99,7 @@
     </div>
 
     <div class="btn-group">
-        <button class="sound-btn" onclick="initAudio()">🔊 הפעל סאונד חמ"ל</button>
+        <button onclick="initAudio()">🔊 הפעל סאונד חמ"ל</button>
         <button onclick="updateUI(false)">שגרה (בדיקה)</button>
         <button onclick="updateUI(true)">אקשן (בדיקה)</button>
     </div>
